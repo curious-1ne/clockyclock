@@ -1,0 +1,271 @@
+import React, { useState } from 'react';
+import { PieChart, Pie, Cell, Tooltip } from 'recharts';
+import domtoimage from 'dom-to-image';
+import Papa from 'papaparse';
+import { HexColorPicker } from 'react-colorful';
+
+type Slice = { id: string; label: string; start: string; end: string; color: string };
+const TOTAL = 3600;
+const uuid = () => Math.random().toString(36).substring(2, 9);
+
+const timeToSeconds = (t: string) => {
+  const [m, s] = t.split(':').map(Number);
+  return m * 60 + s;
+};
+
+export default function RadioHourPlanner() {
+  const [slices, setSlices] = useState<Slice[]>([
+    { id: uuid(), label: 'Show Segment', start: '00:00', end: '14:00', color: '#60a5fa' },
+    { id: uuid(), label: 'Commercial', start: '14:00', end: '29:00', color: '#fbbf24' },
+    { id: uuid(), label: 'Network Break', start: '29:00', end: '44:00', color: '#9333ea' },
+    { id: uuid(), label: 'News', start: '44:00', end: '60:00', color: '#10b981' },
+  ]);
+  const [selectedSlice, setSelectedSlice] = useState<Slice | null>(null);
+  const [newRow, setNewRow] = useState({ label: '', start: '', end: '' });
+
+  const addRow = () => {
+    if (!newRow.label || !newRow.start || !newRow.end) return;
+    const randomColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+    setSlices([...slices, { id: uuid(), label: newRow.label, start: newRow.start, end: newRow.end, color: randomColor }]);
+    setNewRow({ label: '', start: '', end: '' });
+  };
+
+  const deleteRow = (id: string) => {
+    setSlices(slices.filter((s) => s.id !== id));
+  };
+
+  const updateSliceField = (id: string, field: keyof Slice, value: string) => {
+    setSlices(slices.map((s) => (s.id === id ? { ...s, [field]: value } : s)));
+  };
+
+  const exportClock = () => {
+    const node = document.getElementById('clock-container');
+    if (!node) return;
+    domtoimage.toPng(node).then((dataUrl: string) => {
+      const link = document.createElement('a');
+      link.download = 'clock.png';
+      link.href = dataUrl;
+      link.click();
+    });
+  };
+
+  const handleCSVUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    Papa.parse(file, {
+      header: true,
+      complete: (results: Papa.ParseResult<any>) => {
+        const importedSlices = results.data
+          .filter((row: any) => row.label && row.start && row.end)
+          .map((row: any) => ({
+            id: uuid(),
+            label: row.label,
+            start: row.start,
+            end: row.end,
+            color: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
+          }));
+        setSlices(importedSlices);
+      },
+    });
+  };
+
+  const slicesWithSeconds = slices
+    .map((s) => {
+      let startSec = timeToSeconds(s.start);
+      let endSec = timeToSeconds(s.end);
+      let seconds = endSec - startSec;
+      if (seconds <= 0) seconds += TOTAL;
+      return { ...s, seconds, startSec, endSec };
+    })
+    .sort((a, b) => a.startSec - b.startSec);
+
+  return (
+    <div className="bg-gray-900 text-gray-100 min-h-screen p-6">
+      <h1 className="text-3xl font-bold text-center mb-6">🎙️ Broadcast Clock Planner</h1>
+
+      <div className="flex flex-col lg:flex-row gap-6 justify-center">
+        <div id="clock-container" style={{ position: 'relative', width: '500px', height: '500px' }}>
+          <img
+            src="/alt-clock.svg"
+            alt="Clock Face"
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              objectFit: 'contain',
+              zIndex: 0,
+            }}
+          />
+          <PieChart width={500} height={500} style={{ position: 'absolute', top: 0, left: 0, zIndex: 1 }}>
+            <Pie
+              data={slicesWithSeconds}
+              cx="50%"
+              cy="50%"
+              innerRadius={50}
+              outerRadius={150}
+              dataKey="seconds"
+              nameKey="label"
+              startAngle={90}
+              endAngle={-270}
+              stroke="#fff"
+              strokeWidth={3}
+              isAnimationActive={false}
+              onClick={(_data: any, index: number) => setSelectedSlice(slices[index])}
+              label={({ name, cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
+                const radius = innerRadius + (outerRadius - innerRadius) / 2;
+                const x = cx + radius * Math.cos(-midAngle * (Math.PI / 180));
+                const y = cy + radius * Math.sin(-midAngle * (Math.PI / 180));
+                const fontSize = percent < 0.05 ? 8 : 10;
+                return (
+                  <text
+                    x={x}
+                    y={y}
+                    textAnchor="middle"
+                    dominantBaseline="middle"
+                    fontSize={fontSize}
+                    fill="#fff"
+                  >
+                    {name}
+                  </text>
+                );
+              }}
+              labelLine={false}
+            >
+              {slicesWithSeconds.map((s) => (
+                <Cell key={s.id} fill={s.color} />
+              ))}
+            </Pie>
+            <Tooltip formatter={(v, n, p) => `${n}: ${p.payload.start} → ${p.payload.end}`} />
+          </PieChart>
+        </div>
+
+        <div className="w-full lg:w-[500px] space-y-4">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="bg-gray-700">
+                <th>Color</th>
+                <th>Label</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>✖</th>
+              </tr>
+            </thead>
+            <tbody>
+              {slices.map((slice) => (
+                <tr key={slice.id} className="border-b border-gray-700">
+                  <td className="p-2">
+                    <div style={{ backgroundColor: slice.color }} className="w-5 h-5 rounded"></div>
+                  </td>
+                  <td className="p-2">{slice.label}</td>
+                  <td className="p-2">{slice.start}</td>
+                  <td className="p-2">{slice.end}</td>
+                  <td className="p-2">
+                    <button
+                      onClick={() => deleteRow(slice.id)}
+                      className="text-red-400 hover:text-red-600"
+                    >
+                      ✖
+                    </button>
+                  </td>
+                </tr>
+              ))}
+              <tr>
+                <td></td>
+                <td>
+                  <input
+                    className="bg-gray-700 text-white p-1 rounded w-full"
+                    placeholder="New section"
+                    value={newRow.label}
+                    onChange={(e) => setNewRow({ ...newRow, label: e.target.value })}
+                  />
+                </td>
+                <td>
+                  <input
+                    className="bg-gray-700 text-white p-1 rounded w-full"
+                    placeholder="mm:ss"
+                    value={newRow.start}
+                    onChange={(e) => setNewRow({ ...newRow, start: e.target.value })}
+                  />
+                </td>
+                <td>
+                  <input
+                    className="bg-gray-700 text-white p-1 rounded w-full"
+                    placeholder="mm:ss"
+                    value={newRow.end}
+                    onChange={(e) => setNewRow({ ...newRow, end: e.target.value })}
+                  />
+                </td>
+                <td>
+                  <button
+                    onClick={addRow}
+                    className="bg-green-500 text-white px-2 py-1 rounded"
+                  >
+                    ➕
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div className="flex gap-2">
+            <input type="file" accept=".csv" onChange={handleCSVUpload} />
+            <button
+              onClick={exportClock}
+              className="bg-blue-500 text-white px-4 py-2 rounded"
+            >
+              📸 Export Clock as PNG
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {selectedSlice && (
+        <div className="fixed top-4 right-4 bg-gray-800 p-4 rounded-lg w-80 shadow-lg z-50">
+          <h2 className="text-xl font-bold mb-2">Edit Slice</h2>
+          <input
+            className="bg-gray-700 text-white p-2 rounded mb-2 w-full"
+            value={selectedSlice.label}
+            onChange={(e) => setSelectedSlice({ ...selectedSlice, label: e.target.value })}
+            placeholder="Label"
+          />
+          <input
+            className="bg-gray-700 text-white p-2 rounded mb-2 w-full"
+            value={selectedSlice.start}
+            onChange={(e) => setSelectedSlice({ ...selectedSlice, start: e.target.value })}
+            placeholder="Start (mm:ss)"
+          />
+          <input
+            className="bg-gray-700 text-white p-2 rounded mb-2 w-full"
+            value={selectedSlice.end}
+            onChange={(e) => setSelectedSlice({ ...selectedSlice, end: e.target.value })}
+            placeholder="End (mm:ss)"
+          />
+          <HexColorPicker
+            color={selectedSlice.color}
+            onChange={(color) => setSelectedSlice({ ...selectedSlice, color })}
+          />
+          <button
+            className="bg-green-600 text-white px-4 py-2 mt-4 rounded w-full"
+            onClick={() => {
+              updateSliceField(selectedSlice.id, 'label', selectedSlice.label);
+              updateSliceField(selectedSlice.id, 'start', selectedSlice.start);
+              updateSliceField(selectedSlice.id, 'end', selectedSlice.end);
+              updateSliceField(selectedSlice.id, 'color', selectedSlice.color);
+              setSelectedSlice(null);
+            }}
+          >
+            Save Changes
+          </button>
+          <button
+            className="bg-gray-500 text-white px-4 py-2 mt-2 rounded w-full"
+            onClick={() => setSelectedSlice(null)}
+          >
+            Cancel
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
