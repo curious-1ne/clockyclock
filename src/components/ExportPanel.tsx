@@ -1,7 +1,7 @@
 // File: src/components/ExportPanel.tsx
 
 import React from "react";
-import Papa, { ParseResult } from "papaparse";
+import Papa from "papaparse"; // ✅ simple and safe
 import domtoimage from "dom-to-image";
 import type { Slice } from "../types/sliceTypes";
 import { timeToSeconds } from "../utils/timeUtils";
@@ -29,7 +29,7 @@ export const ExportPanel: React.FC<Props> = ({ onImport }) => {
 
     Papa.parse(file, {
       header: true,
-      complete: (results: ParseResult<any>) => {
+      complete: (results: any) => {
         const importedSlices = results.data
           .filter(
             (row: any) => row.label && row.start && row.end
