@@ -13,26 +13,28 @@ export const ClockChart: React.FC<ClockChartProps> = ({
   onSelectSlice,
 }) => {
   const CHART_SIZE = 540;
-  const CLOCK_RADIUS = 143; // Adjusted to match background
+  const CLOCK_RADIUS = 143;
   const INNER_LABEL_RADIUS = 40;
 
-  // Custom legend that's clickable
+  // ✅ Updated: Render legend with numbered labels
   const renderLegend = (props: any) => {
     const { payload } = props;
-    
+
     return (
-      <div className="flex flex-col gap-2 mt-4">
+      <div className="flex flex-col items-center gap-2 mt-4">
         {payload.map((entry: any, index: number) => (
           <div
             key={`legend-${index}`}
-            className="flex items-center gap-2 cursor-pointer hover:bg-gray-700 p-2 rounded"
+            className="flex items-center gap-2 cursor-pointer hover:bg-gray-700 px-3 py-1 rounded"
             onClick={() => onSelectSlice(slices[index])}
           >
             <div
               className="w-4 h-4 rounded"
               style={{ backgroundColor: entry.color }}
             />
-            <span className="text-sm">{entry.value}</span>
+            <span className="text-sm font-medium text-white">
+              {index + 1}. {entry.value}
+            </span>
           </div>
         ))}
       </div>
@@ -76,7 +78,7 @@ export const ClockChart: React.FC<ClockChartProps> = ({
             }}
             label={({ cx, cy, midAngle, index }) => {
               const RADIAN = Math.PI / 180;
-              const radius = 140; // Adjusted for better number placement
+              const radius = 140;
               const x = cx + radius * Math.cos(-midAngle * RADIAN);
               const y = cy + radius * Math.sin(-midAngle * RADIAN);
 
@@ -116,14 +118,12 @@ export const ClockChart: React.FC<ClockChartProps> = ({
               padding: "8px",
             }}
           />
-          
+
           <Legend
             content={renderLegend}
             verticalAlign="bottom"
             align="center"
-            wrapperStyle={{
-              paddingTop: "20px",
-            }}
+            wrapperStyle={{ paddingTop: "24px" }}
           />
         </PieChart>
       </div>
