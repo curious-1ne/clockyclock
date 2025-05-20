@@ -13,7 +13,7 @@ export const ClockChart: React.FC<ClockChartProps> = ({
   onSelectSlice,
 }) => {
   const CHART_SIZE = 540;
-  const CLOCK_RADIUS = 143;
+  const CLOCK_RADIUS = 133;
   const INNER_LABEL_RADIUS = 30;
 
   // Adjust slice angles manually to use full 360° range
