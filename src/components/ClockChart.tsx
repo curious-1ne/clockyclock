@@ -14,14 +14,13 @@ export const ClockChart: React.FC<ClockChartProps> = ({
 }) => {
   const CHART_SIZE = 540;
   const CLOCK_RADIUS = 123;
-  const INNER_LABEL_RADIUS = 40;
   const LABEL_OFFSET = 60;
+  const INNER_LABEL_RADIUS = 55; // 🛠️ pushed numbers outward
 
-  // ✅ Custom clickable legend
   const renderLegend = (props: any) => {
     const { payload } = props;
     return (
-      <div className="flex flex-col gap-2 mt-4">
+      <div className="flex flex-col gap-2 mt-4 px-4">
         {payload.map((entry: any, index: number) => (
           <div
             key={`legend-${index}`}
@@ -44,7 +43,7 @@ export const ClockChart: React.FC<ClockChartProps> = ({
       id="clock-container"
       style={{
         width: `${CHART_SIZE}px`,
-        height: `${CHART_SIZE}px`,
+        height: `${CHART_SIZE + 80}px`,
         backgroundColor: "#000",
         backgroundImage: `url("/clock-face.svg")`,
         backgroundSize: "contain",
@@ -56,6 +55,7 @@ export const ClockChart: React.FC<ClockChartProps> = ({
       }}
     >
       <PieChart width={CHART_SIZE} height={CHART_SIZE}>
+        {/* Outer Pie */}
         <Pie
           data={slices}
           cx="50%"
@@ -82,7 +82,6 @@ export const ClockChart: React.FC<ClockChartProps> = ({
             const lineX = cx + (outerRadius + 5) * Math.cos(angle);
             const lineY = cy + (outerRadius + 5) * Math.sin(angle);
             const textAnchor = x > cx ? "start" : "end";
-            const label = `${index + 1}. ${slices[index].label}`;
 
             return (
               <g>
@@ -115,7 +114,7 @@ export const ClockChart: React.FC<ClockChartProps> = ({
                   fontWeight={600}
                   fill="#fff"
                 >
-                  {label}
+                  {index + 1}. {slices[index].label}
                 </text>
               </g>
             );
@@ -127,7 +126,7 @@ export const ClockChart: React.FC<ClockChartProps> = ({
           ))}
         </Pie>
 
-        {/* Inner slice numbers */}
+        {/* 🛠 Inner circle numbers — fixed placement */}
         <Pie
           data={slices}
           cx="50%"
@@ -149,11 +148,9 @@ export const ClockChart: React.FC<ClockChartProps> = ({
                 y={y}
                 textAnchor="middle"
                 dominantBaseline="middle"
-                fontSize={11}
+                fontSize={13}
                 fontWeight={700}
-                fill="#000"
-                stroke="#fff"
-                strokeWidth={0.8}
+                fill="#fff"
               >
                 {index + 1}
               </text>
@@ -168,7 +165,7 @@ export const ClockChart: React.FC<ClockChartProps> = ({
             return `${name}: ${secondsToTime(startSeconds)} → ${secondsToTime(endSeconds)}`;
           }}
           contentStyle={{
-            backgroundColor: "rgba(0, 0, 0, 0.85)",
+            backgroundColor: "rgba(0, 0, 0, 0.8)",
             border: "1px solid #fff",
             borderRadius: "6px",
             padding: "8px",
@@ -179,7 +176,7 @@ export const ClockChart: React.FC<ClockChartProps> = ({
           content={renderLegend}
           verticalAlign="bottom"
           align="center"
-          wrapperStyle={{ paddingTop: "12px" }}
+          wrapperStyle={{ paddingTop: "24px" }}
         />
       </PieChart>
     </div>
