@@ -13,7 +13,7 @@ export const ClockChart: React.FC<ClockChartProps> = ({
   onSelectSlice,
 }) => {
   const CHART_SIZE = 540;
-  const CLOCK_RADIUS = 133;
+  const CLOCK_RADIUS = 143;
 
   return (
     <div className="flex flex-col items-center gap-8">
@@ -26,7 +26,7 @@ export const ClockChart: React.FC<ClockChartProps> = ({
           height: `${CHART_SIZE}px`,
           backgroundColor: "#000",
           backgroundImage: `url("/clock-face.svg")`,
-          backgroundSize: "contain",
+          backgroundSize: "100% 100%",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
           borderRadius: "12px",
@@ -96,7 +96,7 @@ export const ClockChart: React.FC<ClockChartProps> = ({
         </PieChart>
       </div>
 
-      {/* Legend */}
+      {/* Legend / Segment Table */}
       <div className="w-full max-w-md bg-gray-900 rounded-lg p-4 shadow-lg">
         <h2 className="text-xl font-bold mb-4 text-center text-white border-b border-gray-700 pb-2">
           Segments
