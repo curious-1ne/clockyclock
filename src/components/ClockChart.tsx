@@ -122,7 +122,7 @@ export const ClockChart: React.FC<ClockChartProps> = ({
           <Legend
             content={renderLegend}
             verticalAlign="bottom"
-            align="center"
+            align="bottom"
             wrapperStyle={{ paddingTop: "24px" }}
           />
         </PieChart>
