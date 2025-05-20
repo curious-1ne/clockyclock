@@ -14,9 +14,10 @@ export const ClockChart: React.FC<ClockChartProps> = ({
 }) => {
   const CHART_SIZE = 540;
   const CLOCK_RADIUS = 123;
-  const LABEL_OFFSET = 60;
   const INNER_LABEL_RADIUS = 40;
+  const LABEL_OFFSET = 60;
 
+  // ✅ Custom clickable legend
   const renderLegend = (props: any) => {
     const { payload } = props;
     return (
@@ -46,7 +47,7 @@ export const ClockChart: React.FC<ClockChartProps> = ({
         height: `${CHART_SIZE}px`,
         backgroundColor: "#000",
         backgroundImage: `url("/clock-face.svg")`,
-        backgroundSize: "90% 90%",
+        backgroundSize: "contain",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
         borderRadius: "12px",
@@ -59,7 +60,7 @@ export const ClockChart: React.FC<ClockChartProps> = ({
           data={slices}
           cx="50%"
           cy="50%"
-          innerRadius={20}
+          innerRadius={30}
           outerRadius={CLOCK_RADIUS}
           dataKey="duration"
           nameKey="label"
@@ -75,21 +76,23 @@ export const ClockChart: React.FC<ClockChartProps> = ({
           label={({ cx, cy, midAngle, outerRadius, index }) => {
             const RADIAN = Math.PI / 180;
             const angle = -midAngle * RADIAN;
-            const x = cx + (outerRadius + LABEL_OFFSET) * Math.cos(angle);
-            const y = cy + (outerRadius + LABEL_OFFSET) * Math.sin(angle) + ((index % 2 === 0 ? -1 : 1) * 25);
+            const labelRadius = outerRadius + LABEL_OFFSET;
+            const x = cx + labelRadius * Math.cos(angle);
+            const y = cy + labelRadius * Math.sin(angle);
+            const lineX = cx + (outerRadius + 5) * Math.cos(angle);
+            const lineY = cy + (outerRadius + 5) * Math.sin(angle);
             const textAnchor = x > cx ? "start" : "end";
-            const sliceNum = index + 1;
-            const label = `${sliceNum}. ${slices[index].label}`;
+            const label = `${index + 1}. ${slices[index].label}`;
 
             return (
               <g>
                 <line
-                  x1={cx + (outerRadius + 5) * Math.cos(angle)}
-                  y1={cy + (outerRadius + 5) * Math.sin(angle)}
+                  x1={lineX}
+                  y1={lineY}
                   x2={x}
                   y2={y}
                   stroke="#FFD700"
-                  strokeWidth={3}
+                  strokeWidth={2}
                   strokeLinecap="round"
                 />
                 <circle cx={x} cy={y} r={3} fill="#FFD700" />
@@ -124,6 +127,7 @@ export const ClockChart: React.FC<ClockChartProps> = ({
           ))}
         </Pie>
 
+        {/* Inner slice numbers */}
         <Pie
           data={slices}
           cx="50%"
@@ -164,9 +168,9 @@ export const ClockChart: React.FC<ClockChartProps> = ({
             return `${name}: ${secondsToTime(startSeconds)} → ${secondsToTime(endSeconds)}`;
           }}
           contentStyle={{
-            backgroundColor: "rgba(0, 0, 0, 0.8)",
+            backgroundColor: "rgba(0, 0, 0, 0.85)",
             border: "1px solid #fff",
-            borderRadius: "4px",
+            borderRadius: "6px",
             padding: "8px",
           }}
         />
@@ -175,9 +179,7 @@ export const ClockChart: React.FC<ClockChartProps> = ({
           content={renderLegend}
           verticalAlign="bottom"
           align="center"
-          wrapperStyle={{
-            paddingTop: "20px",
-          }}
+          wrapperStyle={{ paddingTop: "12px" }}
         />
       </PieChart>
     </div>
