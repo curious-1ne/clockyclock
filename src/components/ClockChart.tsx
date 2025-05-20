@@ -1,6 +1,6 @@
 import React from "react";
 import { PieChart, Pie, Cell, Tooltip } from "recharts";
-import type { UISlice } from "../types/segmentTypes";
+import type { UISlice } from "../types/sliceTypes";
 import { secondsToTime } from "../utils/timeUtils";
 
 type ClockChartProps = {

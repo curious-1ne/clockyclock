@@ -1,4 +1,5 @@
-// ✅ s../types/sliceTypes.ts
+// File: s../types/sliceTypes.ts
+
 export type Slice = {
   id: string;
   label: string;

@@ -1,7 +1,7 @@
 // File: src/hooks/useSlices.ts
 
 import { useState } from "react";
-import type { Slice, UISlice } from "../types/segmentTypes";
+import type { Slice, UISlice } from "../types/sliceTypes";
 
 
 export const useSlices = () => {
