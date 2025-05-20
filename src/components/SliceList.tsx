@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { secondsToTime, timeToSeconds } from "../utils/timeUtils";
-import type { Slice } from "../types/sliceTypes";
+import { secondsToTime, timeToSeconds } from "../utils/timeUtilsFixed";
+import type { Slice } from "../types/sliceTypesFixed";
 
 type Props = {
   slices: Slice[];

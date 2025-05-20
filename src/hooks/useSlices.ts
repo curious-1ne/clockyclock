@@ -1,7 +1,7 @@
 // File: src/hooks/useSlices.ts
 
 import { useState } from "react";
-import type { Slice, UISlice } from "../types/sliceTypes";
+import type { Slice, UISlice } from "../types/sliceTypesFixed";
 
 
 export const useSlices = () => {
@@ -47,13 +47,12 @@ export const useSlices = () => {
     );
   };
 
-  const updateSlice = (id: string, updated: Partial<Slice>) => {
-    setSlices((prev) =>
-      prev
-        .map((slice) => (slice.id === id ? { ...slice, ...updated } : slice))
-        .sort((a, b) => a.startSeconds - b.startSeconds)
-    );
-  };
+ const updateSlice = (id: string, updated: Partial<Slice>) => {
+  setSlices((prev) =>
+    prev.map((s) => (s.id === id ? { ...s, ...updated } : s))
+  );
+};
+
 
   const deleteSlice = (id: string) => {
     setSlices((prev) => prev.filter((s) => s.id !== id));

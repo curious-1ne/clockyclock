@@ -4,8 +4,8 @@ import { ClockChart } from "./components/ClockChart";
 import { SliceList } from "./components/SliceList";
 import { ExportPanel } from "./components/ExportPanel";
 import { HexColorPicker } from "react-colorful";
-import { timeToSeconds, secondsToTime } from "./utils/timeUtils";
-import type { Slice, UISlice } from "./types/sliceTypes";
+import { timeToSeconds, secondsToTime } from "./utils/timeUtilsFixed";
+import type { Slice, UISlice } from "./types/sliceTypesFixed";
 
 export default function RadioHourPlanner() {
   const {

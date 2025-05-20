@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { HexColorPicker } from "react-colorful";
-import { timeToSeconds, secondsToTime } from "../utils/timeUtils";
-import type { Slice } from "../types/sliceTypes";
+import { timeToSeconds, secondsToTime } from "../utils/timeUtilsFixed";
+import type { Slice } from "../types/sliceTypesFixed";
 
 type Props = {
   slice: Slice;

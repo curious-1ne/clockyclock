@@ -3,8 +3,8 @@
 import React from "react";
 import Papa from "papaparse"; // ✅ simple and safe
 import domtoimage from "dom-to-image";
-import type { Slice } from "../types/sliceTypes";
-import { timeToSeconds } from "../utils/timeUtils";
+import type { Slice } from "../types/sliceTypesFixed";
+import { timeToSeconds } from "../utils/timeUtilsFixed";
 
 type Props = {
   onImport: (slices: Omit<Slice, "id">[]) => void;
