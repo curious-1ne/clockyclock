@@ -13,17 +13,7 @@ export const ClockChart: React.FC<ClockChartProps> = ({
   onSelectSlice,
 }) => {
   const CHART_SIZE = 540;
-  const CLOCK_RADIUS = 143;
-  const INNER_LABEL_RADIUS = 40;
-
-  // Compute accurate startAngle and endAngle based on slice startSeconds
-  const getAngle = (seconds: number) => 90 - (seconds / 3600) * 360;
-
-  const pieData = slices.map((slice) => ({
-    ...slice,
-    startAngle: getAngle(slice.startSeconds),
-    endAngle: getAngle((slice.startSeconds + slice.duration) % 3600),
-  }));
+  const CLOCK_RADIUS = 135;
 
   return (
     <div className="flex flex-col items-center gap-8">
@@ -37,31 +27,45 @@ export const ClockChart: React.FC<ClockChartProps> = ({
           backgroundColor: "#000",
           backgroundImage: `url("/clock-face.svg")`,
           backgroundSize: "contain",
-          backgroundPosition: "center",
+          backgroundPosition: "center center",
           backgroundRepeat: "no-repeat",
           borderRadius: "12px",
           overflow: "hidden",
         }}
       >
-        <PieChart width={CHART_SIZE} height={CHART_SIZE}>
-          {pieData.map((slice, index) => (
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: CHART_SIZE,
+            height: CHART_SIZE,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <PieChart width={CHART_SIZE} height={CHART_SIZE}>
             <Pie
-              key={slice.id}
-              data={[slice]}
-              cx={CHART_SIZE / 2}
-              cy={CHART_SIZE / 2}
+              data={slices}
+              cx="50%"
+              cy="50%"
               innerRadius={30}
               outerRadius={CLOCK_RADIUS}
-              startAngle={slice.startAngle}
-              endAngle={slice.endAngle}
               dataKey="duration"
-              isAnimationActive={false}
+              nameKey="label"
+              startAngle={90}
+              endAngle={-270}
               stroke="#fff"
               strokeWidth={2}
-              onClick={() => onSelectSlice(slice)}
-              label={({ cx, cy, midAngle }) => {
+              isAnimationActive={false}
+              onClick={(_, index) => {
+                const selected = slices[index];
+                if (selected) onSelectSlice(selected);
+              }}
+              label={({ cx, cy, midAngle, index }) => {
                 const RADIAN = Math.PI / 180;
-                const radius = 100;
+                const radius = 140;
                 const x = cx + radius * Math.cos(-midAngle * RADIAN);
                 const y = cy + radius * Math.sin(-midAngle * RADIAN);
 
@@ -71,11 +75,11 @@ export const ClockChart: React.FC<ClockChartProps> = ({
                     y={y}
                     textAnchor="middle"
                     dominantBaseline="middle"
-                    fontSize={18}
+                    fontSize={24}
                     fontWeight="bold"
                     fill="#fff"
                     stroke="#000"
-                    strokeWidth={2}
+                    strokeWidth={3}
                     paintOrder="stroke"
                   >
                     {index + 1}
@@ -84,26 +88,28 @@ export const ClockChart: React.FC<ClockChartProps> = ({
               }}
               labelLine={false}
             >
-              <Cell fill={slice.color} />
+              {slices.map((s) => (
+                <Cell key={s.id} fill={s.color} />
+              ))}
             </Pie>
-          ))}
 
-          <Tooltip
-            formatter={(_, name, props) => {
-              const { startSeconds, endSeconds } = props?.payload || {};
-              return `${name}: ${secondsToTime(startSeconds)} → ${secondsToTime(endSeconds)}`;
-            }}
-            contentStyle={{
-              backgroundColor: "rgba(0, 0, 0, 0.8)",
-              border: "1px solid #fff",
-              borderRadius: "4px",
-              padding: "8px",
-            }}
-          />
-        </PieChart>
+            <Tooltip
+              formatter={(_, name, props) => {
+                const { startSeconds, endSeconds } = props?.payload || {};
+                return `${name}: ${secondsToTime(startSeconds)} → ${secondsToTime(endSeconds)}`;
+              }}
+              contentStyle={{
+                backgroundColor: "rgba(0, 0, 0, 0.8)",
+                border: "1px solid #fff",
+                borderRadius: "4px",
+                padding: "8px",
+              }}
+            />
+          </PieChart>
+        </div>
       </div>
 
-      {/* Legend Table */}
+      {/* Legend */}
       <div className="w-full max-w-md bg-gray-900 rounded-lg p-4 shadow-lg">
         <h2 className="text-xl font-bold mb-4 text-center text-white border-b border-gray-700 pb-2">
           Segments
@@ -124,7 +130,7 @@ export const ClockChart: React.FC<ClockChartProps> = ({
                   {index + 1}. {slice.label}
                 </span>
               </div>
-              <span className="text-sm text-gray-300 font-mono">
+              <span className="text-md text-gray-300 font-mono">
                 {secondsToTime(slice.startSeconds)} →{" "}
                 {secondsToTime(slice.endSeconds)}
               </span>
