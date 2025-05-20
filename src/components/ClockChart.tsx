@@ -13,7 +13,7 @@ export const ClockChart: React.FC<ClockChartProps> = ({
   onSelectSlice,
 }) => {
   const CHART_SIZE = 540;
-  const CLOCK_RADIUS = 140;
+  const CLOCK_RADIUS = 135;
 
   return (
     <div className="flex flex-col items-center gap-8">
