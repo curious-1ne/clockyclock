@@ -59,7 +59,7 @@ export const ClockChart: React.FC<ClockChartProps> = ({
         <PieChart width={CHART_SIZE} height={CHART_SIZE}>
           <Pie
             data={slices}
-            cx={CHART_SIZE / 2}
+            cx={CHART_SIZE / 1.9}
             cy={CHART_SIZE / 1.9}
             innerRadius={30}
             outerRadius={CLOCK_RADIUS}
