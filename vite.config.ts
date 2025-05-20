@@ -6,7 +6,7 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   resolve: {
-    // 👇 This ensures imports like '../utils/timeUtilsFixed' are found
+    // 👇 This ensures imports like '../utils/timeHelpers' are found
     extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json'],
   },
 });
