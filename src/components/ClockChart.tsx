@@ -12,7 +12,7 @@ export const ClockChart: React.FC<ClockChartProps> = ({
   slices,
   onSelectSlice,
 }) => {
-  const CHART_SIZE = 440;
+  const CHART_SIZE = 640;
   const CLOCK_RADIUS = 180; // Adjusted to match background
   const INNER_LABEL_RADIUS = 40;
 
