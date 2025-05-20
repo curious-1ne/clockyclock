@@ -13,7 +13,7 @@ export const ClockChart: React.FC<ClockChartProps> = ({
   onSelectSlice,
 }) => {
   const CHART_SIZE = 540;
-  const CLOCK_RADIUS = 123;
+  const CLOCK_RADIUS = 200; // Adjusted to match background
   const INNER_LABEL_RADIUS = 40;
 
   // Custom legend that's clickable
@@ -48,83 +48,85 @@ export const ClockChart: React.FC<ClockChartProps> = ({
         height: `${CHART_SIZE + 120}px`,
         backgroundColor: "#000",
         backgroundImage: `url("/clock-face.svg")`,
-        backgroundSize: "90% 90%",
+        backgroundSize: "contain",
         backgroundPosition: "top center",
         backgroundRepeat: "no-repeat",
         borderRadius: "12px",
         overflow: "hidden",
       }}
     >
-      <PieChart width={CHART_SIZE} height={CHART_SIZE}>
-        <Pie
-          data={slices}
-          cx="50%"
-          cy="50%"
-          innerRadius={20}
-          outerRadius={CLOCK_RADIUS}
-          dataKey="duration"
-          nameKey="label"
-          startAngle={90}
-          endAngle={-270}
-          stroke="#fff"
-          strokeWidth={2}
-          isAnimationActive={false}
-          onClick={(_, index) => {
-            const selected = slices[index];
-            if (selected) onSelectSlice(selected);
-          }}
-          label={({ cx, cy, midAngle, index }) => {
-            const RADIAN = Math.PI / 180;
-            const radius = 85;
-            const x = cx + radius * Math.cos(-midAngle * RADIAN);
-            const y = cy + radius * Math.sin(-midAngle * RADIAN);
+      <div style={{ transform: "scale(0.9)", transformOrigin: "center top" }}>
+        <PieChart width={CHART_SIZE} height={CHART_SIZE}>
+          <Pie
+            data={slices}
+            cx={CHART_SIZE / 2}
+            cy={CHART_SIZE / 2}
+            innerRadius={30}
+            outerRadius={CLOCK_RADIUS}
+            dataKey="duration"
+            nameKey="label"
+            startAngle={90}
+            endAngle={-270}
+            stroke="#fff"
+            strokeWidth={2}
+            isAnimationActive={false}
+            onClick={(_, index) => {
+              const selected = slices[index];
+              if (selected) onSelectSlice(selected);
+            }}
+            label={({ cx, cy, midAngle, index }) => {
+              const RADIAN = Math.PI / 180;
+              const radius = 140; // Adjusted for better number placement
+              const x = cx + radius * Math.cos(-midAngle * RADIAN);
+              const y = cy + radius * Math.sin(-midAngle * RADIAN);
 
-            return (
-              <text
-                x={x}
-                y={y}
-                textAnchor="middle"
-                dominantBaseline="middle"
-                fontSize={16}
-                fontWeight="bold"
-                fill="#fff"
-                stroke="#000"
-                strokeWidth={2}
-                paintOrder="stroke"
-              >
-                {index + 1}
-              </text>
-            );
-          }}
-          labelLine={false}
-        >
-          {slices.map((s) => (
-            <Cell key={s.id} fill={s.color} />
-          ))}
-        </Pie>
+              return (
+                <text
+                  x={x}
+                  y={y}
+                  textAnchor="middle"
+                  dominantBaseline="middle"
+                  fontSize={16}
+                  fontWeight="bold"
+                  fill="#fff"
+                  stroke="#000"
+                  strokeWidth={2}
+                  paintOrder="stroke"
+                >
+                  {index + 1}
+                </text>
+              );
+            }}
+            labelLine={false}
+          >
+            {slices.map((s) => (
+              <Cell key={s.id} fill={s.color} />
+            ))}
+          </Pie>
 
-        <Tooltip
-          formatter={(_, name, props) => {
-            const { startSeconds, endSeconds } = props?.payload || {};
-            return `${name}: ${secondsToTime(startSeconds)} → ${secondsToTime(endSeconds)}`;
-          }}
-          contentStyle={{
-            backgroundColor: "rgba(0, 0, 0, 0.8)",
-            border: "1px solid #fff",
-            borderRadius: "4px",
-            padding: "8px",
-          }}
-        />
-        
-        <Legend
-          content={renderLegend}
-          verticalAlign="bottom"
-          align="center"
-          wrapperStyle={{
-            paddingTop: "20px",
-          }}
-        />
-      </PieChart>
+          <Tooltip
+            formatter={(_, name, props) => {
+              const { startSeconds, endSeconds } = props?.payload || {};
+              return `${name}: ${secondsToTime(startSeconds)} → ${secondsToTime(endSeconds)}`;
+            }}
+            contentStyle={{
+              backgroundColor: "rgba(0, 0, 0, 0.8)",
+              border: "1px solid #fff",
+              borderRadius: "4px",
+              padding: "8px",
+            }}
+          />
+          
+          <Legend
+            content={renderLegend}
+            verticalAlign="bottom"
+            align="center"
+            wrapperStyle={{
+              paddingTop: "20px",
+            }}
+          />
+        </PieChart>
+      </div>
     </div>
   );
 };
