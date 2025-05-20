@@ -13,7 +13,7 @@ export const ClockChart: React.FC<ClockChartProps> = ({
   onSelectSlice,
 }) => {
   const CHART_SIZE = 540;
-  const CLOCK_RADIUS = 200; // Adjusted to match background
+  const CLOCK_RADIUS = 180; // Adjusted to match background
   const INNER_LABEL_RADIUS = 40;
 
   // Custom legend that's clickable
