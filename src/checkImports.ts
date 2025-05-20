@@ -1,7 +1,7 @@
 // File: src/checkImports.ts
 
 // 👇 These force Vercel to include these files in the build
-import { timeToSeconds, secondsToTime } from "./utils/timeHelpers";
+import { timeToSeconds, secondsToTime } from ../utils/timeUtils";
 import type { Slice, UISlice } from "./types/segmentTypes";
 
 // Dummy usage

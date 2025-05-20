@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { secondsToTime, timeToSeconds } from "../utils/timeHelpers";
+import { secondsToTime, timeToSeconds } from "../utils/timeUtils";
 import type { Slice } from "../types/segmentTypes";
 
 type Props = {

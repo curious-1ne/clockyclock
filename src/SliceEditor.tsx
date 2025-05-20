@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { HexColorPicker } from "react-colorful";
-import { timeToSeconds, secondsToTime } from "../utils/timeHelpers";
+import { timeToSeconds, secondsToTime } from "../utils/timeUtils";
 import type { Slice } from "../types/segmentTypes";
 
 type Props = {

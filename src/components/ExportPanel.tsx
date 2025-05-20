@@ -4,7 +4,7 @@ import React from "react";
 import Papa from "papaparse"; // ✅ simple and safe
 import domtoimage from "dom-to-image";
 import type { Slice } from "../types/segmentTypes";
-import { timeToSeconds } from "../utils/timeHelpers";
+import { timeToSeconds } from "../utils/timeUtils";
 
 type Props = {
   onImport: (slices: Omit<Slice, "id">[]) => void;
