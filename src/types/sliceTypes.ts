@@ -1,4 +1,3 @@
-// ✅ s../types/sliceTypes.ts
 export type Slice = {
   id: string;
   label: string;
@@ -9,4 +8,12 @@ export type Slice = {
 
 export type UISlice = Slice & {
   endSeconds: number;
+};
+
+export type SavedClock = {
+  id: string;
+  name: string;
+  episodeNumber: string;
+  date: string;
+  slices: Slice[];
 };
