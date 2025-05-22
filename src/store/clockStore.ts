@@ -12,7 +12,7 @@ interface ClockState {
 
 export const useClockStore = create<ClockState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       savedClocks: [],
       currentClock: null,
       addClock: (name, episodeNumber, slices) => {
@@ -21,7 +21,7 @@ export const useClockStore = create<ClockState>()(
           name,
           episodeNumber,
           date: new Date().toISOString(),
-          slices,
+          slices: [...slices], // Create a new array to ensure proper state updates
         };
         set((state) => ({
           savedClocks: [...state.savedClocks, newClock],
@@ -29,10 +29,9 @@ export const useClockStore = create<ClockState>()(
         }));
       },
       loadClock: (id) => {
-        const clock = get().savedClocks.find((c) => c.id === id);
-        if (clock) {
-          set({ currentClock: clock });
-        }
+        set((state) => ({
+          currentClock: state.savedClocks.find((c) => c.id === id) || null,
+        }));
       },
       deleteClock: (id) => {
         set((state) => ({
@@ -43,6 +42,7 @@ export const useClockStore = create<ClockState>()(
     }),
     {
       name: 'radio-clock-storage',
+      version: 1,
     }
   )
 );

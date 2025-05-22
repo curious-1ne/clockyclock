@@ -13,7 +13,10 @@ export const SaveClockModal: React.FC<Props> = ({ slices, onClose }) => {
   const addClock = useClockStore((state) => state.addClock);
 
   const handleSave = () => {
-    if (!name || !episodeNumber) return;
+    if (!name || !episodeNumber) {
+      alert('Please enter both show name and episode number');
+      return;
+    }
     addClock(name, episodeNumber, slices);
     onClose();
   };
@@ -21,27 +24,27 @@ export const SaveClockModal: React.FC<Props> = ({ slices, onClose }) => {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-gray-800 p-6 rounded-lg w-96">
-        <h2 className="text-xl font-bold mb-4">Save Clock Configuration</h2>
+        <h2 className="text-xl font-bold mb-4 text-white">Save Clock Configuration</h2>
         
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-1">Show Name</label>
+            <label className="block text-sm font-medium mb-1 text-white">Show Name</label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full bg-gray-700 rounded p-2"
+              className="w-full bg-gray-700 rounded p-2 text-white"
               placeholder="Enter show name"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">Episode Number</label>
+            <label className="block text-sm font-medium mb-1 text-white">Episode Number</label>
             <input
               type="text"
               value={episodeNumber}
               onChange={(e) => setEpisodeNumber(e.target.value)}
-              className="w-full bg-gray-700 rounded p-2"
+              className="w-full bg-gray-700 rounded p-2 text-white"
               placeholder="Enter episode number"
             />
           </div>
@@ -50,13 +53,13 @@ export const SaveClockModal: React.FC<Props> = ({ slices, onClose }) => {
         <div className="flex gap-2 mt-6">
           <button
             onClick={handleSave}
-            className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded flex-1"
+            className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded flex-1 text-white"
           >
             Save
           </button>
           <button
             onClick={onClose}
-            className="bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded flex-1"
+            className="bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded flex-1 text-white"
           >
             Cancel
           </button>
