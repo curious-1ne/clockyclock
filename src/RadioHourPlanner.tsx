@@ -7,6 +7,7 @@ import { SaveClockModal } from "./components/SaveClockModal";
 import { SavedClocksList } from "./components/SavedClocksList";
 import { useClockStore } from "./store/clockStore";
 import type { Slice, UISlice } from "./types/sliceTypes";
+import { SliceEditor } from "./components/SliceEditor";
 
 export default function RadioHourPlanner() {
   const {
@@ -93,6 +94,14 @@ export default function RadioHourPlanner() {
             <SavedClocksList />
           </div>
         </div>
+
+        {selectedSlice && (
+          <SliceEditor
+            slice={selectedSlice}
+            onSave={updateSlice}
+            onClose={() => setSelectedSlice(null)}
+          />
+        )}
 
         {showSaveModal && (
           <SaveClockModal
